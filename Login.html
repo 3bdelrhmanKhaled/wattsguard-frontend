@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: white;
+            animation: fadeIn 1s ease-in;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4E5F53;
+            box-shadow: 0 0 8px rgba(78, 95, 83, 0.2);
+            transform: scale(1.02);
+        }
+        label {
+            font-weight: 600;
+            color: #4E5F53;
+            margin-bottom: 8px;
+        }
+        .btn-primary {
+            background: #4E5F53;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #3d4a40;
+            transform: translateY(-2px);
+        }
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .text-center a {
+            color: #4E5F53;
+            transition: color 0.3s ease;
+        }
+        .text-center a:hover {
+            color: #3d4a40;
+            text-decoration: underline;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .card {
+                margin: 20px;
+            }
+            .form-control {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card mt-5 mb-5 p-4">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4" style="color: #4E5F53;">تسجيل الدخول</h2>
+                        
+                        <div id="alertContainer"></div>
+                        
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="idNumber">رقم الهوية</label>
+                                <input type="text" class="form-control" id="idNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">كلمة المرور</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-block" id="loginButton">
+                                    <span id="loginButtonText">دخول</span>
+                                    <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="Signup.html" class="text-decoration-none">ليس لديك حساب؟ سجل الآن</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.auth.isLoggedIn()) {
+                window.location.href = 'newcopy.html';
+            }
+            
+            document.getElementById('loginForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const loginButton = document.getElementById('loginButton');
+                const loginButtonText = document.getElementById('loginButtonText');
+                const loginSpinner = document.getElementById('loginSpinner');
+                
+                loginButton.disabled = true;
+                loginButtonText.classList.add('d-none');
+                loginSpinner.classList.remove('d-none');
+                
+                const idNumber = document.getElementById('idNumber').value;
+                const password = document.getElementById('password').value;
+                
+                try {
+                    const userData = await window.auth.login(idNumber, password);
+                    showAlert('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'newcopy.html';
+                    }, 1500);
+                    
+                } catch (error) {
+                    showAlert('فشل تسجيل الدخول. يرجى التحقق من رقم الهوية وكلمة المرور.', 'danger');
+                    
+                    loginButton.disabled = false;
+                    loginButtonText.classList.remove('d-none');
+                    loginSpinner.classList.add('d-none');
+                }
+            });
+        });
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

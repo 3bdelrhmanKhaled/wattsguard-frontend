@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع السرقة - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        .icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4E5F53;
+            border: solid 1px #4E5F53;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 22px;
+            margin-left: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .icons a:hover {
+            background-color: #ffffff;
+            color: #4E5F53;
+        }
+        .icons a.notification::after {
+            content: "1";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            display: none;
+        }
+        .back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: solid 1px #4E5F53;
+            color: #4E5F53;
+            text-decoration: none;
+            font-size: 22px;
+            margin-left: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .back:hover {
+            background-color: #4E5F53;
+            color: #ffffff;
+        }
+        .text-s {
+            font-size: 40px;
+            font-weight: 400;
+            color: #4E5F53;
+            padding-bottom: 10px;
+            border-bottom: solid 3px #4E5F53;
+        }
+        @media (max-width: 576px) {
+            .text-s {
+                font-size: 24px;
+            }
+        }
+        .responsive-label {
+            font-size: 32px;
+            font-weight: 400;
+            color: #4E5F53;
+        }
+        @media (max-width: 768px) {
+            .responsive-label {
+                font-size: 20px;
+            }
+        }
+        .card {
+            border: solid 2px #4E5F53;
+            border-radius: 10px;
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4E5F53;
+            box-shadow: 0 0 5px rgba(78, 95, 83, 0.2);
+        }
+        .btn-three {
+            background-color: #ffffff;
+            border: solid 1px #4E5F53;
+            font-size: 18px;
+            color: #4E5F53;
+            font-weight: 400;
+            border-radius: 8px;
+            padding: 12px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: relative;
+        }
+        .btn-three:hover {
+            background-color: #4E5F53;
+            color: #ffffff;
+        }
+        .btn-with-badge {
+            padding-left: 40px;
+        }
+        .btn-with-badge .badge {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: red;
+            color: white;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-with-badge .badge.hidden {
+            display: none;
+        }
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1:not(.text-s) {
+            font-size: 25px;
+            color: #4E5F53;
+            text-align: right;
+        }
+        @media (max-width: 768px) {
+            .card {
+                margin: 15px;
+            }
+            .btn-three {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header container pt-3 pb-5 d-flex justify-content-between">
+        <div class="icons">
+            <a href="#" class="notification"><i class="far fa-bell"></i></a>
+        </div>
+        <div class="d-flex align-items-center">
+            <h1 class="mx-4 text-s">موقع السرقة</h1>
+            <a href="index.html" class="back text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="container"></div>
+
+    <div class="container" style="direction: rtl;">
+        <h1>المحافظات</h1>
+    </div>
+
+    <div class="searsh container mt-3" style="direction: rtl;">
+        <div class="row align-items-center">
+            <label for="searchInput" class="responsive-label col-auto fw-bold">المحافظات (27)</label>
+            <div class="col">
+                <input type="search" id="searchInput" class="form-control py-4" placeholder="ابحث هنا">
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-3">
+        <div class="card p-5">
+            <div class="row" style="direction: rtl;">
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge" onclick="navigateToGovernorate('الدقهلية')">
+                        <span class="badge">1</span> الدقهلية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> القاهرة
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> الإسكندرية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> الجيزة
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> الشرقية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> البحيرة
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> المنوفية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> القليوبية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> كفر الشيخ
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> الغربية
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> أسيوط
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> سوهاج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/counter.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            const user = window.auth.getUser();
+            if (!user || !isAdmin(user)) {
+                showAlert('ليس لديك صلاحية للوصول إلى هذه الصفحة.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            document.getElementById('searchInput').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const buttons = document.querySelectorAll('.btn-three');
+                
+                buttons.forEach(button => {
+                    const governorateName = button.textContent.trim().toLowerCase();
+                    if (governorateName.includes(searchTerm)) {
+                        button.parentElement.style.display = '';
+                    } else {
+                        button.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        function isAdmin(user) {
+            return user && user.email && user.email.includes('@');
+        }
+        
+        function navigateToGovernorate(governorate) {
+            localStorage.setItem('selectedGovernorate', governorate);
+            window.location.href = 'admin-governorate.html';
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+/* Placeholder image for Rectangle-1.png */
+.placeholder-image {
+  width: 100px;
+  height: 100px;
+  background-color: #4E5F53;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+}
