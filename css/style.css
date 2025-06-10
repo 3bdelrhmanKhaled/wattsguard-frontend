@@ -1,0 +1,130 @@
+/* Main CSS styles for WattsGuard application */
+
+:root {
+  --primary-color: #4E5F53;
+  --secondary-color: #ffffff;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --font-family: 'Cairo', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  direction: rtl;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: solid 1px var(--primary-color);
+  color: var(--secondary-color);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(78, 95, 83, 0.25);
+}
+
+/* Loading spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 100px auto;
+  background-color: var(--primary-color);
+  border-radius: 100%;  
+  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+  animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-scaleout {
+  0% { -webkit-transform: scale(0) }
+  100% { -webkit-transform: scale(1.0); opacity: 0; }
+}
+
+@keyframes sk-scaleout {
+  0% { transform: scale(0); -webkit-transform: scale(0); }
+  100% { transform: scale(1.0); -webkit-transform: scale(1.0); opacity: 0; }
+}
+
+/* Alert messages */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-warning {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+/* Auth pages specific styles */
+.auth-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 2px solid var(--primary-color);
+  border-radius: 10px;
+}
+
+.auth-title {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+/* Admin pages specific styles */
+.badge-notification {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--danger-color);
+  color: white;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .responsive-text {
+    font-size: 18px !important;
+  }
+  
+  .responsive-button {
+    font-size: 14px !important;
+  }
+}

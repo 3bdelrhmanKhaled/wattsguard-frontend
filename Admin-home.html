@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - WattsGuard</title>
+    <link rel="icon" type="image/png" href="Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header container pt-3 pb-5 d-flex justify-content-between">
+        <div class="icons">
+            <a href="#" class="notification"><i class="far fa-bell"></i></a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+        <div class="d-flex align-items-center">
+            <h1 class="mx-4 text-s">لوحة الإدارة</h1>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="container"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x mb-3" style="color: #4E5F53;"></i>
+                        <h3>المستخدمين</h3>
+                        <p class="display-4" id="usersCount">245</p>
+                        <a href="#" class="btn btn-primary">إدارة المستخدمين</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tachometer-alt fa-3x mb-3" style="color: #4E5F53;"></i>
+                        <h3>العدادات</h3>
+                        <p class="display-4" id="countersCount">198</p>
+                        <a href="#" class="btn btn-primary">إدارة العدادات</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #dc3545;"></i>
+                        <h3>حالات السرقة</h3>
+                        <p class="display-4 text-danger" id="theftCount">12</p>
+                        <a href="thefe-direction.html" class="btn btn-danger">عرض حالات السرقة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">استهلاك الكهرباء الشهري</h3>
+                        <div style="height: 300px;">
+                            <canvas id="consumptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">توزيع المستخدمين حسب المحافظة</h3>
+                        <div style="height: 300px;">
+                            <canvas id="usersDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">آخر الإشعارات</h3>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ</th>
+                                        <th>النوع</th>
+                                        <th>الوصف</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="notificationsList">
+                                    <tr>
+                                        <td>2025-06-03 20:15:30</td>
+                                        <td><span class="badge badge-danger">سرقة</span></td>
+                                        <td>تم اكتشاف سرقة كهرباء في عداد guard2002</td>
+                                        <td><a href="last.html" class="btn btn-sm btn-primary">عرض التفاصيل</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2025-06-03 18:45:12</td>
+                                        <td><span class="badge badge-warning">تحذير</span></td>
+                                        <td>استهلاك غير طبيعي في عداد c6007981</td>
+                                        <td><a href="#" class="btn btn-sm btn-primary">عرض التفاصيل</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2025-06-03 15:22:05</td>
+                                        <td><span class="badge badge-info">تسجيل</span></td>
+                                        <td>تم تسجيل مستخدم جديد: عبد الرحمن خالد</td>
+                                        <td><a href="#" class="btn btn-sm btn-primary">عرض التفاصيل</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // التحقق من تسجيل الدخول
+            if (!window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+
+            try {
+                // الحصول على بيانات المستخدم
+                const user = window.auth.getUser();
+                
+                // التحقق من صلاحيات المدير
+                if (!window.auth.isAdmin(user)) {
+                    // المستخدم ليس لديه صلاحيات المدير
+                    window.location.href = 'newcopy.html';
+                    return;
+                }
+
+                // تحديث الإحصائيات
+                updateStats();
+                
+            } catch (error) {
+                console.error('خطأ في التحقق من صلاحيات المدير:', error);
+                window.location.href = 'Login.html';
+            }
+        });
+
+        function updateStats() {
+            // تحديث عدد المستخدمين
+            window.api.get('/Users/Count').then(data => {
+                document.getElementById('usersCount').textContent = data.count;
+            });
+
+            // تحديث عدد العدادات
+            window.api.get('/Counters/Count').then(data => {
+                document.getElementById('countersCount').textContent = data.count;
+            });
+
+            // تحديث حالات السرقة
+            window.api.get('/Thefts/Count').then(data => {
+                document.getElementById('theftCount').textContent = data.count;
+            });
+        }
+    </script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/counter.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            const user = window.auth.getUser();
+            if (!user || !isAdmin(user)) {
+                showAlert('ليس لديك صلاحية للوصول إلى هذه الصفحة.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'newcopy.html';
+                }, 2000);
+                return;
+            }
+            
+            createConsumptionChart();
+            createUsersDistributionChart();
+            
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.auth.logout();
+            });
+        });
+        
+        function createConsumptionChart() {
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
+            const consumptionData = [120000, 135000, 142000, 138000, 145000, 150000];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'إجمالي استهلاك الكهرباء (كيلوواط/ساعة)',
+                        data: consumptionData,
+                        backgroundColor: 'rgba(78, 95, 83, 0.2)',
+                        borderColor: '#4E5F53',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#4E5F53',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'كيلوواط/ساعة'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createUsersDistributionChart() {
+            const ctx = document.getElementById('usersDistributionChart').getContext('2d');
+            const governorates = ['القاهرة', 'الإسكندرية', 'الدقهلية', 'الشرقية', 'الجيزة'];
+            const usersData = [85, 45, 65, 30, 20];
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: governorates,
+                    datasets: [{
+                        label: 'عدد المستخدمين',
+                        data: usersData,
+                        backgroundColor: [
+                            'rgba(78, 95, 83, 0.7)',
+                            'rgba(78, 95, 83, 0.6)',
+                            'rgba(78, 95, 83, 0.5)',
+                            'rgba(78, 95, 83, 0.4)',
+                            'rgba(78, 95, 83, 0.3)'
+                        ],
+                        borderColor: '#4E5F53',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'عدد المستخدمين'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function isAdmin(user) {
+            return user && user.email && user.email.includes('@');
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

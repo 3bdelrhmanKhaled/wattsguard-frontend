@@ -1,0 +1,105 @@
+/* Additional styles for WattsGuard application */
+
+/* Button with badge styling */
+.btn-with-badge {
+    position: relative;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    color: #4E5F53;
+    border: 2px solid #4E5F53;
+    transition: all 0.3s ease;
+}
+
+.btn-with-badge:hover {
+    background-color: #4E5F53;
+    color: #ffffff;
+}
+
+.btn-with-badge .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: white;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+/* Custom button styles */
+.btn-three {
+    font-weight: 600;
+}
+
+/* Admin panel specific styles */
+.admin-card {
+    transition: transform 0.3s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart container styles */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 576px) {
+    .btn-with-badge {
+        margin-bottom: 15px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+    
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4E5F53;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3a4a3f;
+}

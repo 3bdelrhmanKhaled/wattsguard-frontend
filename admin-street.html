@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الشوارع - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="header container pt-3 pb-5 d-flex justify-content-between">
+        <div class="icons">
+            <a href="#" class="notification"><i class="far fa-bell"></i></a>
+        </div>
+        <div class="d-flex align-items-center">
+            <h1 class="mx-4 text-s">الشوارع</h1>
+            <a href="admin-points.html" class="back text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="container"></div>
+
+    <div class="container" style="direction: rtl;">
+        <h1 id="locationPath">محافظة الدقهلية > مدينة المنصورة > منطقة أحمد ماهر</h1>
+    </div>
+
+    <div class="searsh container mt-3" style="direction: rtl;">
+        <div class="row align-items-center">
+            <label for="searchInput" class="responsive-label col-auto fw-bold">الشوارع (10)</label>
+            <div class="col">
+                <input type="search" id="searchInput" class="form-control py-4" placeholder="ابحث هنا">
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-3">
+        <div class="card p-5">
+            <div class="row" style="direction: rtl;">
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge" onclick="navigateToStreet('شارع 11')">
+                        <span class="badge">1</span> شارع 11
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 12
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 13
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 14
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 15
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 16
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 17
+                    </button>
+                </div>
+                <div class="col-md-3 my-2">
+                    <button class="w-100 m-1 btn btn-three rounded btn-with-badge">
+                        <span class="badge hidden">0</span> شارع 18
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/counter.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            const user = window.auth.getUser();
+            if (!user || !isAdmin(user)) {
+                showAlert('ليس لديك صلاحية للوصول إلى هذه الصفحة.', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'newcopy.html';
+                }, 2000);
+                return;
+            }
+            
+            const governorate = localStorage.getItem('selectedGovernorate');
+            const city = localStorage.getItem('selectedCity');
+            const region = localStorage.getItem('selectedRegion');
+            
+            if (governorate && city && region) {
+                document.getElementById('locationPath').textContent = `محافظة ${governorate} > مدينة ${city} > منطقة ${region}`;
+            }
+            
+            document.getElementById('searchInput').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const buttons = document.querySelectorAll('.btn-three');
+                
+                buttons.forEach(button => {
+                    const streetName = button.textContent.trim().toLowerCase();
+                    if (streetName.includes(searchTerm)) {
+                        button.parentElement.style.display = '';
+                    } else {
+                        button.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        function isAdmin(user) {
+            return user && user.email && user.email.includes('@');
+        }
+        
+        function navigateToStreet(street) {
+            localStorage.setItem('selectedStreet', street);
+            window.location.href = 'admin-house.html';
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

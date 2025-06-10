@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنزل - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+</head>
+<body>
+    <div class="header container pt-3 pb-5 d-flex justify-content-between">
+        <div class="icons">
+            <a href="#" class="notification"><i class="far fa-bell"></i></a>
+        </div>
+        <div class="d-flex align-items-center">
+            <h1 class="mx-4 text-s"><i class="fas fa-bolt me-2"></i> تفاصيل المنزل</h1>
+            <a href="admin-house.html" class="back text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="container"></div>
+
+    <div class="container" style="direction: rtl;">
+        <h1 id="locationPath">
+            <i class="fas fa-plug me-2"></i> محافظة الدقهلية > مدينة المنصورة > منطقة أحمد ماهر > شارع 1 > منزل 1
+        </h1>
+    </div>
+
+    <div class="container my-3">
+        <div class="card p-4">
+            <h3 class="text-center mb-4" style="color: #4E5F53;"><i class="fas fa-tachometer-alt me-2"></i> معلومات العداد</h3>
+            <div class="row" style="direction: rtl;">
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInRight">
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card me-2"></i> معرف العداد:</label>
+                        <p id="counterId" class="form-control">guard2002</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInLeft">
+                    <div class="form-group">
+                        <label><i class="fas fa-user me-2"></i> اسم المستخدم:</label>
+                        <p id="userName" class="form-control">عبد الرحمن خالد</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInRight">
+                    <div class="form-group">
+                        <label><i class="fas fa-bolt me-2"></i> القراءة الرسمية:</label>
+                        <p id="officialReading" class="form-control">56666 كيلوواط/ساعة</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInLeft">
+                    <div class="form-group">
+                        <label><i class="fas fa-tachometer-alt me-2"></i> القراءة الفعلية:</label>
+                        <p id="actualReading" class="form-control">67000 كيلوواط/ساعة</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInRight">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt me-2"></i> تاريخ آخر قراءة:</label>
+                        <p id="lastReadingDate" class="form-control">2025-06-02 23:57:39</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3 animate__animated animate__fadeInLeft">
+                    <div class="form-group">
+                        <label><i class="fas fa-exclamation-triangle me-2"></i> حالة السرقة:</label>
+                        <p id="theftStatus" class="form-control text-danger">تم الإبلاغ عن سرقة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4 p-4">
+            <h3 class="text-center mb-4" style="color: #4E5F53;"><i class="fas fa-shield-alt me-2"></i> الإجراءات</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-4 text-center mb-3 animate__animated animate__fadeInUp">
+                    <button id="warnUserBtn" class="btn btn-warning btn-three btn-block">
+                        <i class="fas fa-exclamation-triangle me-2"></i> تحذير المستخدم
+                    </button>
+                </div>
+                <div class="col-md-4 text-center mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <button id="reportTheftBtn" class="btn btn-danger btn-three btn-block">
+                        <i class="fas fa-siren me-2"></i> إبلاغ عن سرقة
+                    </button>
+                </div>
+                <div class="col-md-4 text-center mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                    <button id="viewHistoryBtn" class="btn btn-info btn-three btn-block">
+                        <i class="fas fa-history me-2"></i> عرض السجل
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4 p-4 d-none" id="historyCard">
+            <h3 class="text-center mb-4" style="color: #4E5F53;"><i class="fas fa-book me-2"></i> سجل القراءات</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>القراءة</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readingHistory">
+                        <!-- سيتم إضافة سجل القراءات هنا ديناميكيًا -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/counter.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!window.auth || !window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+
+            const user = window.auth.getUser();
+            if (!user || !isAdmin(user)) {
+                showAlert('ليس لديك صلاحية للوصول إلى هذه الصفحة.', 'danger');
+                setTimeout(() => window.location.href = 'newcopy.html', 2000);
+                return;
+            }
+
+            const counterId = document.getElementById('counterId').textContent;
+            try {
+                const counterData = await window.counter.getCounterData(counterId);
+                if (counterData && counterData.length > 0) {
+                    const data = counterData[0];
+                    document.getElementById('officialReading').textContent = `${data.reading} كيلوواط/ساعة`;
+                    document.getElementById('actualReading').textContent = `${data.reading} كيلوواط/ساعة`;
+                    document.getElementById('lastReadingDate').textContent = formatDate(data.timeStamp);
+                    if (data.address) {
+                        document.getElementById('locationPath').textContent = 
+                            `محافظة ${data.address.governorate} > مدينة ${data.address.city} > منطقة ${data.address.region} > شارع ${data.address.street} > منزل 1`;
+                    }
+                }
+
+                const theftStatus = await window.counter.isUserThief(counterId);
+                const theftStatusElement = document.getElementById('theftStatus');
+                if (theftStatus.isThief) {
+                    theftStatusElement.textContent = 'تم الإبلاغ عن سرقة';
+                    theftStatusElement.className = 'form-control text-danger font-weight-bold animate__animated animate__pulse';
+                } else {
+                    theftStatusElement.textContent = 'لا توجد سرقة';
+                    theftStatusElement.className = 'form-control text-success';
+                }
+            } catch (error) {
+                console.error('خطأ في جلب بيانات العداد:', error);
+                showAlert('حدث خطأ أثناء جلب بيانات العداد.', 'danger');
+            }
+
+            document.getElementById('warnUserBtn').addEventListener('click', function() {
+                this.classList.add('animate__animated', 'animate__pulse');
+                showAlert('تم إرسال تحذير إلى المستخدم بنجاح!', 'success');
+                setTimeout(() => this.classList.remove('animate__animated', 'animate__pulse'), 500);
+            });
+
+            document.getElementById('reportTheftBtn').addEventListener('click', async function() {
+                this.classList.add('animate__animated', 'animate__pulse');
+                try {
+                    showAlert('تم الإبلاغ عن السرقة بنجاح!', 'success');
+                    const theftStatusElement = document.getElementById('theftStatus');
+                    theftStatusElement.textContent = 'تم الإبلاغ عن سرقة';
+                    theftStatusElement.className = 'form-control text-danger font-weight-bold animate__animated animate__pulse';
+                } catch (error) {
+                    console.error('خطأ في الإبلاغ عن السرقة:', error);
+                    showAlert('حدث خطأ أثناء الإبلاغ عن السرقة.', 'danger');
+                }
+                setTimeout(() => this.classList.remove('animate__animated', 'animate__pulse'), 500);
+            });
+
+            document.getElementById('viewHistoryBtn').addEventListener('click', function() {
+                const historyCard = document.getElementById('historyCard');
+                if (historyCard.classList.contains('d-none')) {
+                    historyCard.classList.remove('d-none');
+                    historyCard.classList.add('animate__animated', 'animate__fadeIn');
+                    document.getElementById('readingHistory').innerHTML = `
+                        <tr class="animate__animated animate__fadeInRight">
+                            <td>2025-06-02 23:57:39</td>
+                            <td>56666 كيلوواط/ساعة</td>
+                            <td class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>سرقة</td>
+                        </tr>
+                        <tr class="animate__animated animate__fadeInRight" style="animation-delay: 0.2s;">
+                            <td>2025-05-02 10:15:22</td>
+                            <td>55200 كيلوواط/ساعة</td>
+                            <td class="text-success"><i class="fas fa-check-circle me-2"></i>طبيعي</td>
+                        </tr>
+                        <tr class="animate__animated animate__fadeInRight" style="animation-delay: 0.4s;">
+                            <td>2025-04-02 14:30:45</td>
+                            <td>53800 كيلوواط/ساعة</td>
+                            <td class="text-success"><i class="fas fa-check-circle me-2"></i>طبيعي</td>
+                        </tr>
+                    `;
+                } else {
+                    historyCard.classList.add('animate__animated', 'animate__fadeOut');
+                    setTimeout(() => {
+                        historyCard.classList.add('d-none');
+                        historyCard.classList.remove('animate__animated', 'animate__fadeOut');
+                    }, 500);
+                }
+            });
+        });
+
+        function formatDate(dateString) {
+            if (!dateString) return 'غير متوفر';
+            const date = new Date(dateString);
+            return date.toLocaleString('ar-EG', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function isAdmin(user) {
+            return user && user.email && user.email.includes('@');
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show animate__animated animate__fadeInDown`;
+            alertElement.role = 'alert';
+            alertElement.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            setTimeout(() => $(alertElement).alert('close'), 5000);
+        }
+    </script>
+</body>
+</html>

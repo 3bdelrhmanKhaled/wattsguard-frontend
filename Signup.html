@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card mt-5 mb-5 p-4">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4" style="color: #4E5F53;">إنشاء حساب جديد</h2>
+                        
+                        <div id="alertContainer"></div>
+                        
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <label for="idNumber">رقم الهوية</label>
+                                <input type="text" class="form-control" id="idNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">الاسم</label>
+                                <input type="text" class="form-control" id="name" required pattern="[a-zA-Z0-9]+">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">كلمة المرور</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="counterId">معرف العداد</label>
+                                <input type="text" class="form-control" id="counterId" required>
+                            </div>
+                            
+                            <h4 class="section-title">العنوان</h4>
+                            <div class="form-group">
+                                <label for="street">الشارع</label>
+                                <input type="text" class="form-control" id="street" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="region">المنطقة</label>
+                                <input type="text" class="form-control" id="region" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">المدينة</label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="governorate">المحافظة</label>
+                                <input type="text" class="form-control" id="governorate" required>
+                            </div>
+                            
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-block" id="signupButton">
+                                    <span id="signupButtonText">إنشاء حساب</span>
+                                    <span id="signupSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="Login.html" class="text-decoration-none">لديك حساب بالفعل؟ سجل دخول</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.auth.isLoggedIn()) {
+                window.location.href = 'newcopy.html';
+            }
+            
+            document.getElementById('signupForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const signupButton = document.getElementById('signupButton');
+                const signupButtonText = document.getElementById('signupButtonText');
+                const signupSpinner = document.getElementById('signupSpinner');
+                
+                signupButton.disabled = true;
+                signupButtonText.classList.add('d-none');
+                signupSpinner.classList.remove('d-none');
+                
+                const userData = {
+                    idNumber: document.getElementById('idNumber').value.trim(),
+                    name: document.getElementById('name').value.trim(),
+                    password: document.getElementById('password').value,
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    counterId: document.getElementById('counterId').value.trim(),
+                    address: {
+                        street: document.getElementById('street').value.trim(),
+                        region: document.getElementById('region').value.trim(),
+                        city: document.getElementById('city').value.trim(),
+                        governorate: document.getElementById('governorate').value.trim()
+                    }
+                };
+
+                // التحقق من صحة البيانات قبل الإرسال
+                if (!userData.idNumber || !userData.name || !userData.password || !userData.email || 
+                    !userData.phone || userData.counterId === undefined || !userData.address.street || 
+                    !userData.address.region || !userData.address.city || !userData.address.governorate) {
+                    throw new Error('جميع الحقول مطلوبة');
+                }
+
+                // التحقق من صحة البريد الإلكتروني
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(userData.email)) {
+                    throw new Error('البريد الإلكتروني غير صالح');
+                }
+                
+                try {
+                    console.log('بيانات التسجيل:', userData);
+                    const result = await window.auth.registerUser(userData);
+                    console.log('نتيجة التسجيل:', result);
+                    
+                    showAlert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'Login.html';
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('خطأ في التسجيل:', error);
+                    showAlert('فشل إنشاء الحساب. يرجى التحقق من البيانات المدخلة والمحاولة مرة أخرى.', 'danger');
+                    
+                    signupButton.disabled = false;
+                    signupButtonText.classList.remove('d-none');
+                    signupSpinner.classList.add('d-none');
+                }
+            });
+        });
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

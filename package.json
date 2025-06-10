@@ -1,0 +1,12 @@
+{
+  "name": "wattsguard-frontend",
+  "version": "1.0.0",
+  "description": "WattsGuard Frontend",
+  "main": "index.html",
+  "scripts": {
+    "deploy": "gh-pages -d ."
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
+  }
+}

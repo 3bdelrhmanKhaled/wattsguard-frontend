@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطوات الأجهزة - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icons">
+                <a href="#" class="notification"><i class="far fa-bell"></i></a>
+            </div>
+            <h2 class="text-s">إضافة جهاز</h2>
+            <a href="season.html" class="back text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="progress-steps" id="progressBar"></div>
+        </div>
+        <div class="step-counter" id="stepCounter"></div>
+        <div id="step-container"></div>
+
+        <div class="text-center">
+            <button id="yourDevicesButton" class="btn btn-primary" style="display:none">الأجهزة الخاص بك</button>
+            <button id="detailedConsumptionButton" class="btn btn-primary" style="display:none">الجدول التفصيلي لاستهلاك الكهرباء</button>
+            <div class="loading-spinner" id="loadingSpinner"></div>
+        </div>
+
+        <div id="result-section" style="display:none; margin-top: 20px;">
+            <div class="result-card">
+                <h4 class="text-right">الجدول الأول: بيانات الأجهزة</h4>
+                <table class="table table-bordered text-right">
+                    <thead><tr><th>الفئة</th><th>الطاقة الكهربائية</th><th>اسم الموديل</th></tr></thead>
+                    <tbody id="rawPowerTable"></tbody>
+                </table>
+            </div>
+            <div class="result-card">
+                <h4 class="text-right">الجدول الثاني: الجدول التفصيلي لاستهلاك الكهرباء حسب نوع الجهاز</h4>
+                <table class="table table-bordered text-right">
+                    <thead><tr><th>الفئة</th><th>اسم الموديل</th><th>الاستهلاك الشهري (ك.و.س)</th><th>عدد ساعات التشغيل يوميًا</th></tr></thead>
+                    <tbody id="summaryTable"></tbody>
+                </table>
+                <p id="billRange" class="mt-4 text-right font-weight-bold"></p>
+                <p id="message" class="text-danger text-right"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/electricity.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = 'يرجى تسجيل الدخول أولاً';
+                setTimeout(() => {
+                    window.location.href = 'Login.html';
+                }, 5000);
+                return;
+            }
+        });
+
+        const devices = [
+            { name: "الميزانية", models: [] },
+            { name: "ثلاجة", models: ["FNT-B400 BB"] },
+            { name: "غسالة", models: ["EL1087567SLV", "EL1094877SLV"] },
+            { name: "مكيف", models: ["S4-H24TZAAE"] },
+            { name: "غلاية كهربائية", models: ["EL1113367BLK"] },
+            { name: "سخان مياه", models: ["TEEE-30MW"] },
+            { name: "قلاية", models: ["TDF-3700"] },
+            { name: "مكنسة كهربائية", models: ["TVC-1200B"] },
+            { name: "غسالة أطباق", models: ["EL1108866SLV"] },
+            { name: "بوتاجاز", models: ["HP41125B"] },
+            { name: "مكواة بخار", models: ["GS42622A"] },
+            { name: "فرن", models: ["ak-45"] },
+            { name: "ميكروويف", models: ["MOM-C25BBE-BK"] },
+            { name: "الأجهزة الخاص بك", models: [] },
+            { name: "الجدول التفصيلي", models: [] }
+        ];
+
+        let currentStep = 0;
+        let answers = [];
+        let structuredAnswers = [];
+        let budget = null;
+        let apiData = null;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const season = urlParams.get('season') || 'summer';
+
+        function renderProgressBar() {
+            const totalSteps = 1 + (devices.length - 3) * 3;
+            const visibleSteps = 15;
+            const stepNumbers = Array.from({ length: visibleSteps }, (_, i) => i + 1);
+            let visibleStep = 0;
+            if (currentStep === 0) {
+                visibleStep = 0;
+            } else if (currentStep <= 36) {
+                const deviceIndex = Math.min(Math.floor((currentStep - 1) / 3), devices.length - 3);
+                visibleStep = deviceIndex + 1;
+            } else if (currentStep === 37) {
+                visibleStep = 13;
+            } else {
+                visibleStep = 14;
+            }
+            const progressPercentage = ((visibleStep + 1) / visibleSteps) * 100;
+            document.getElementById("progressBarFill").style.width = `${progressPercentage}%`;
+            document.getElementById("progressBar").innerHTML = stepNumbers.map((n, i) => `
+                <div class="step-item">
+                    <span class="${i === visibleStep ? 'active' : ''}">${n}</span>
+                </div>
+            `).join('');
+            document.getElementById("stepCounter").innerText = `الخطوة ${visibleStep + 1} من ${visibleSteps}`;
+        }
+
+        async function sendToBackend(budget, structuredAnswers) {
+            const loadingSpinner = document.getElementById("loadingSpinner");
+            const messageElement = document.getElementById("message");
+            
+            loadingSpinner.classList.add("active");
+            messageElement.innerText = '';
+
+            const payload = [budget, ...structuredAnswers.flat()];
+            console.log("📤 جاري إرسال البيانات إلى السيرفر... Payload:", payload);
+
+            try {
+                const data = await window.electricity.calculate(payload, season);
+                console.log('✅ البيانات المستلمة من السيرفر:', data);
+
+                // Format power values to include unit
+                const formattedData = {
+                    raw_power_data: data.rawPowerData?.map(row => ({
+                        ...row,
+                        "Electric Power": `${parseFloat(row["Electric Power"] || 0).toFixed(2)} واط`
+                    })) || [],
+                    summary: data.summary?.map(row => ({
+                        ...row,
+                        "Monthly Consumption (kWh)": `${parseFloat(row["Monthly Consumption (kWh)"] || 0).toFixed(2)} ك.و.س`
+                    })) || [],
+                    estimated_bill_range: data.estimatedBillRange || '',
+                    message: data.message || ''
+                };
+
+                apiData = formattedData;
+                console.log("📦 محتوى apiData بعد المعالجة:", apiData);
+
+                // Update the tables immediately
+                updateTables();
+            } catch (error) {
+                console.error('🚨 خطأ أثناء إرسال البيانات إلى السيرفر:', error);
+                apiData = {
+                    raw_power_data: [],
+                    summary: [],
+                    estimated_bill_range: "",
+                    message: "فشل في جلب البيانات من السيرفر"
+                };
+                messageElement.innerText = `حدث خطأ: ${error.message}. يرجى المحاولة مرة أخرى لاحقًا.`;
+            } finally {
+                loadingSpinner.classList.remove("active");
+            }
+        }
+
+        document.getElementById("yourDevicesButton").addEventListener("click", () => {
+            if (!apiData) {
+                document.getElementById("message").innerText = "يرجى الانتظار حتى يتم جلب البيانات";
+                return;
+            }
+
+            const resultSection = document.getElementById("result-section");
+            resultSection.style.display = "block";
+
+            const rawPowerTable = document.getElementById("rawPowerTable");
+            if (!rawPowerTable) {
+                console.error("العنصر rawPowerTable غير موجود في الـ DOM");
+                return;
+            }
+
+            if (apiData.raw_power_data && apiData.raw_power_data.length > 0) {
+                rawPowerTable.innerHTML = apiData.raw_power_data.map(row =>
+                    `<tr><td>${row.Category || 'غير محدد'}</td><td>${row["Electric Power"] || 'غير معروف'}</td><td>${row["Model Name"] || 'غير معروف'}</td></tr>`
+                ).join('');
+            } else {
+                rawPowerTable.innerHTML = `<tr><td colspan="3" class="no-data-message">لا توجد بيانات متاحة للعرض</td></tr>`;
+            }
+
+            document.getElementById("yourDevicesButton").style.display = "none";
+            currentStep++;
+            renderStep();
+        });
+
+        function updateTables() {
+            const resultSection = document.getElementById("result-section");
+            resultSection.style.display = "block";
+
+            // Update raw power table
+            const rawPowerTable = document.getElementById("rawPowerTable");
+            if (apiData.raw_power_data && apiData.raw_power_data.length > 0) {
+                rawPowerTable.innerHTML = apiData.raw_power_data.map(row =>
+                    `<tr>
+                        <td>${row.Category || 'غير محدد'}</td>
+                        <td>${row["Electric Power"] || 'غير معروف'}</td>
+                        <td>${row["Model Name"] || 'غير معروف'}</td>
+                    </tr>`
+                ).join('');
+            } else {
+                rawPowerTable.innerHTML = `<tr><td colspan="3" class="no-data-message">لا توجد بيانات متاحة للعرض</td></tr>`;
+            }
+
+            // Update summary table
+            const summaryTable = document.getElementById("summaryTable");
+            if (apiData.summary && apiData.summary.length > 0) {
+                summaryTable.innerHTML = apiData.summary.map(row =>
+                    `<tr>
+                        <td>${row.Category || 'غير محدد'}</td>
+                        <td>${row["Model Name"] || 'غير معروف'}</td>
+                        <td>${row["Monthly Consumption (kWh)"] || 'غير معروف'}</td>
+                        <td>${row["Daily Hours"] || 'غير معروف'}</td>
+                    </tr>`
+                ).join('');
+            } else {
+                summaryTable.innerHTML = `<tr><td colspan="4" class="no-data-message">لا توجد بيانات متاحة للعرض</td></tr>`;
+            }
+
+            // Update bill range and message
+            document.getElementById("billRange").innerText = apiData.estimated_bill_range ? `النطاق التقديري للفاتورة: ${apiData.estimated_bill_range} جنيه` : '';
+            document.getElementById("message").innerText = apiData.message || '';
+        }
+
+        function renderStep() {
+            const container = document.getElementById("step-container");
+            container.innerHTML = "";
+            document.getElementById("yourDevicesButton").style.display = "none";
+            document.getElementById("detailedConsumptionButton").style.display = "none";
+            renderProgressBar();
+
+            const card = document.createElement("div");
+            card.classList.add("question-card");
+
+            if (currentStep === 0) {
+                card.innerHTML = `
+                    <label for="budget">ما هو الحد الأقصى للميزانية الشهرية؟</label>
+                    <p class="text-muted">أدخل المبلغ الشهري الذي ترغب في إنفاقه</p>
+                    <input type="number" id="budget" class="form-control" min="100" placeholder="أدخل الميزانية (جنيه)">
+                    <button class="btn btn-primary mt-3" onclick="saveBudget()">التالي</button>`;
+            } else if (currentStep < 1 + (devices.length - 3) * 3) {
+                const deviceIndex = Math.min(Math.floor((currentStep - 1) / 3), devices.length - 3);
+                const device = devices[deviceIndex + 1];
+                if ((currentStep - 1) % 3 === 0) {
+                    card.innerHTML = `
+                        <h3>هل لديك ${device.name}؟</h3>
+                        <p class="text-muted">حدد ما إذا كان لديك هذا الجهاز</p>
+                        <button class="btn btn-primary" onclick="handleYes()">نعم</button>
+                        <button class="btn btn-primary" onclick="handleNo()">لا</button>`;
+                } else if ((currentStep - 1) % 3 === 1) {
+                    card.innerHTML = `
+                        <label for="deviceCount">كم عدد ${device.name} لديك؟</label>
+                        <p class="text-muted">أدخل عدد الأجهزة الموجودة</p>
+                        <input type="number" id="deviceCount" class="form-control" min="1" placeholder="أدخل العدد">
+                        <button class="btn btn-primary mt-3" onclick="nextStep()">التالي</button>`;
+                } else {
+                    const count = answers[answers.length - 1];
+                    card.innerHTML = `
+                        <h4>اختر الموديلات (${device.name})</h4>
+                        <p class="text-muted">اكتب اسم الموديل أو اختر من الاقتراحات</p>
+                        ${Array.from({ length: count }, (_, i) => `
+                            <div class="model-details-container">
+                                <div style="flex: 1;">
+                                    <input type="text" id="model_${i}" list="model_list_${i}" class="form-control my-2 model-input" placeholder="اكتب أو اختر الموديل">
+                                    <datalist id="model_list_${i}">
+                                        ${device.models.map(model => `<option value="${model}">${model}</option>`).join('')}
+                                    </datalist>
+                                </div>
+                                <div class="model-details" id="modelDetails_${i}" style="display: none; flex: 1;"></div>
+                            </div>
+                            <div class="image-upload">
+                                <label for="model_image_${i}">إذا كنت لا تعلم نوع الجهاز، يمكنك رفع صورة للتعرف عليه</label>
+                                <input type="file" id="model_image_${i}" accept="image/*" title="ارفع صورة للتعرف على الجهاز">
+                            </div>`).join('')}
+                        <button class="btn btn-primary mt-3" onclick="submitModels(${count})">التالي</button>`;
+                }
+            } else if (currentStep >= 37) {
+                document.getElementById("yourDevicesButton").style.display = "inline-block";
+                document.getElementById("detailedConsumptionButton").style.display = "inline-block";
+                card.innerHTML = `<p class="text-center">تم جمع بيانات الأجهزة بنجاح، يمكنك الآن عرض النتائج.</p>`;
+            }
+            container.appendChild(card);
+
+            if ((currentStep - 1) % 3 === 2 && currentStep < 37) {
+                const count = answers[answers.length - 1];
+                setTimeout(() => {
+                    for (let i = 0; i < count; i++) {
+                        const modelInput = document.getElementById(`model_${i}`);
+                        const modelDetails = document.getElementById(`modelDetails_${i}`);
+                        if (modelInput && modelDetails) {
+                            modelInput.addEventListener('change', () => {
+                                const modelName = modelInput.value.trim();
+                                if (modelName) {
+                                    getModelDetails(modelName, modelDetails);
+                                } else {
+                                    modelDetails.style.display = 'none';
+                                }
+                            });
+                        }
+                    }
+                }, 0);
+            }
+        }
+
+        async function getModelDetails(modelName, detailsElement) {
+            const messageElement = document.getElementById("message");
+            messageElement.innerText = "";
+            detailsElement.innerHTML = '<div class="loading-spinner active"></div>';
+
+            try {
+                const data = await window.electricity.getModelDetails(encodeURIComponent(modelName));
+                console.log('بيانات الاستجابة:', data);
+
+                if (data.success && data.modelDetails) {
+                    const detailsStr = data.modelDetails;
+                    // Split the details string into lines and create an object
+                    const details = {};
+                    detailsStr.split('\n').forEach(line => {
+                        if (line.includes(':')) {
+                            const [key, value] = line.split(':').map(s => s.trim());
+                            details[key] = value;
+                        }
+                    });
+                    
+                    // Clean up and convert power value
+                    let power = details["Electric Power"];
+                    if (power) {
+                        // Remove any whitespace and normalize decimal separator
+                        power = power.replace(/\s+/g, '').replace(',', '.');
+                        
+                        // Check if it's in kW format
+                        if (power.includes('kW')) {
+                            power = parseFloat(power) * 1000 + ' واط';
+                        } else if (power.includes('W')) {
+                            // Remove the 'W' and keep the number
+                            power = parseFloat(power) + ' واط';
+                        } else {
+                            // If no unit is specified, assume kW
+                            power = parseFloat(power) * 1000 + ' واط';
+                        }
+                        
+                        // Round to 2 decimal places if needed
+                        const powerNum = parseFloat(power);
+                        if (!isNaN(powerNum)) {
+                            power = powerNum.toFixed(2) + ' واط';
+                        }
+                    }
+
+                    detailsElement.innerHTML = `
+                        <strong>اسم الموديل:</strong> ${details["Model Name"] || 'غير معروف'}<br>
+                        <strong>العلامة التجارية:</strong> ${details.Brand || 'غير معروف'}<br>
+                        <strong>الفئة:</strong> ${details["catogory"] || 'غير معروف'}<br>
+                        <strong>الطاقة الكهربائية:</strong> ${power || 'غير معروف'}<br>
+                        ${details.Capacity ? `<strong>السعة:</strong> ${details.Capacity} لتر` : ''}
+                    `;
+                    detailsElement.style.display = 'block';
+                } else {
+                    const errorMessage = data.error || 'لا توجد تفاصيل متوفرة لهذا الموديل';
+                    detailsElement.innerHTML = `
+                        <div class="error-message">
+                            <strong>خطأ:</strong> ${errorMessage}<br>
+                            <small>يمكنك إضافة هذا الموديل، لكن سيتم استخدام قيم افتراضية لحساب استهلاك الطاقة.</small>
+                        </div>
+                    `;
+                    detailsElement.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('خطأ في جلب تفاصيل الموديل:', error);
+                detailsElement.innerHTML = `
+                    <div class="error-message">
+                        <strong>خطأ:</strong> ${error.message}<br>
+                        <small>يمكنك إضافة هذا الموديل، لكن سيتم استخدام قيم افتراضية لحساب استهلاك الطاقة.</small>
+                    </div>
+                `;
+                detailsElement.style.display = 'block';
+                messageElement.innerText = `خطأ: ${error.message}`;
+            }
+        }
+
+        function saveBudget() {
+            const input = document.getElementById("budget").value;
+            if (!input || input < 100) {
+                document.getElementById("message").innerText = "يرجى إدخال ميزانية صالحة (100 جنيه أو أكثر)";
+                return;
+            }
+            budget = input.toString();
+            currentStep++;
+            renderStep();
+        }
+
+        function handleYes() {
+            answers.push("yes");
+            structuredAnswers.push(["yes"]);
+            currentStep++;
+            renderStep();
+        }
+
+        function handleNo() {
+            answers.push("no");
+            structuredAnswers.push(["no", "0"]);
+            currentStep = Math.min(currentStep + 3, 1 + (devices.length - 3) * 3);
+            renderStep();
+        }
+
+        function nextStep() {
+            const count = parseInt(document.getElementById("deviceCount").value);
+            if (!count || count < 1) {
+                document.getElementById("message").innerText = "يرجى إدخال عدد صحيح";
+                return;
+            }
+            answers.push(count.toString());
+            structuredAnswers[structuredAnswers.length - 1].push(count.toString());
+            currentStep++;
+            renderStep();
+        }
+
+        async function submitModels(count) {
+            const messageElement = document.getElementById("message");
+            messageElement.innerText = "";
+
+            for (let i = 0; i < count; i++) {
+                const model = document.getElementById(`model_${i}`).value.trim();
+                if (!model) {
+                    messageElement.innerText = `يرجى كتابة أو اختيار موديل للجهاز رقم ${i + 1}`;
+                    return;
+                }
+                answers.push(model);
+                structuredAnswers[structuredAnswers.length - 1].push(model);
+
+                const imageInput = document.getElementById(`model_image_${i}`);
+                if (imageInput.files.length > 0) {
+                    try {
+                        const formData = new FormData();
+                        formData.append('image', imageInput.files[0]);
+                        await window.api.post('/Electricity/upload-image', formData);
+                        console.log(`تم رفع صورة للجهاز ${i + 1}:`, imageInput.files[0].name);
+                    } catch (error) {
+                        console.error('خطأ في رفع الصورة:', error);
+                        messageElement.innerText = `خطأ في رفع صورة الجهاز ${i + 1}: ${error.message}`;
+                        return;
+                    }
+                }
+            }
+            currentStep++;
+            if (currentStep === 37) {
+                await sendToBackend(budget, structuredAnswers);
+            }
+            renderStep();
+        }
+
+        document.getElementById("detailedConsumptionButton").addEventListener("click", () => {
+            if (!apiData) {
+                document.getElementById("message").innerText = "يرجى عرض الأجهزة الخاص بك أولاً";
+                return;
+            }
+
+            const summaryTable = document.getElementById("summaryTable");
+            if (!summaryTable) {
+                console.error("العنصر summaryTable غير موجود في الـ DOM");
+                return;
+            }
+
+            if (apiData.summary && apiData.summary.length > 0) {
+                summaryTable.innerHTML = apiData.summary.map(row => `
+                    <tr>
+                        <td>${row.Category || 'غير محدد'}</td>
+                        <td>${row["Model name"] || 'غير معروف'}</td>
+                        <td>${row["Monthly Consumption (kWh)"] || 'غير معروف'}</td>
+                        <td>${row["Daily Hours"] || 'غير معروف'}</td>
+                    </tr>
+                `).join('');
+                document.getElementById("billRange").innerText = apiData.estimated_bill_range ? `النطاق التقديري للفاتورة: ${apiData.estimated_bill_range} جنيه` : '';
+                document.getElementById("message").innerText = apiData.message || '';
+            } else {
+                summaryTable.innerHTML = `<tr><td colspan="4" class="no-data-message">لا توجد بيانات استهلاك متاحة حاليًا</td></tr>`;
+                document.getElementById("billRange").innerText = apiData.estimated_bill_range ? `النطاق التقديري للفاتورة: ${apiData.estimated_bill_range} جنيه` : '';
+                document.getElementById("message").innerText = apiData.message || '';
+            }
+            document.getElementById("detailedConsumptionButton").style.display = "none";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStep();
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>

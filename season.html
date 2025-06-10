@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختيار الموسم - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icons">
+                <a href="#" class="notification"><i class="far fa-bell"></i></a>
+            </div>
+            <h2 class="text-s">اختيار الموسم</h2>
+            <div></div>
+        </div>
+
+        <div class="season-selection-card">
+            <h3>اختر الموسم</h3>
+            <p>حدد الموسم الذي ترغب في حساب استهلاك الكهرباء له</p>
+            <div class="select-wrapper">
+                <label for="seasonSelect" class="sr-only">اختيار الموسم</label>
+                <select id="seasonSelect" class="form-control" title="اختر الموسم (الصيف أو الشتاء)">
+                    <option value="summer">الصيف</option>
+                    <option value="winter">الشتاء</option>
+                </select>
+            </div>
+            <p id="message" class="text-danger text-right"></p>
+            <div class="text-center">
+                <button class="btn btn-primary mt-3" onclick="goToNextPage()">التالي</button>
+                <button class="btn btn-secondary mt-3" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('message').innerText = 'يرجى تسجيل الدخول أولاً';
+                document.getElementById('message').classList.add('active');
+                setTimeout(() => {
+                    window.location.href = 'Login.html';
+                }, 2000);
+            }
+        });
+
+        function goToNextPage() {
+            const messageElement = document.getElementById('message');
+            const season = document.getElementById('seasonSelect').value;
+            if (!season) {
+                messageElement.innerText = 'يرجى اختيار الموسم أولاً!';
+                messageElement.classList.add('active');
+                return;
+            }
+            messageElement.innerText = '';
+            messageElement.classList.remove('active');
+            window.location.href = `Add-device2.html?season=${season}`;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>

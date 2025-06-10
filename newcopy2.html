@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإحصائيات - WattsGuard</title>
+    <link rel="icon" type="image/png" href="images/Rectangle-1.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header container pt-3 pb-5 d-flex justify-content-between">
+        <div class="icons">
+            <a href="#" class="notification"><i class="far fa-bell"></i></a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+        <div class="d-flex align-items-center">
+            <h1 class="mx-4 text-s">الإحصائيات</h1>
+            <a href="index.html" class="back text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="container"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">استهلاك الكهرباء الشهري</h3>
+                        <div style="height: 300px;">
+                            <canvas id="monthlyConsumptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">توزيع الاستهلاك حسب الأجهزة</h3>
+                        <div style="height: 300px;">
+                            <canvas id="deviceConsumptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center mb-3">تفاصيل الاستهلاك</h3>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>الجهاز</th>
+                                        <th>الموديل</th>
+                                        <th>الاستهلاك الشهري (كيلوواط/ساعة)</th>
+                                        <th>ساعات التشغيل اليومية</th>
+                                        <th>التكلفة الشهرية (جنيه)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="consumptionDetails">
+                                    <tr>
+                                        <td>سخان مياه</td>
+                                        <td>TEEF-30MM</td>
+                                        <td>338.29</td>
+                                        <td>7 ساعات و 31 دقيقة</td>
+                                        <td>405.95</td>
+                                    </tr>
+                                    <tr>
+                                        <td>قلاية هوائية</td>
+                                        <td>TDF-3700</td>
+                                        <td>172.33</td>
+                                        <td>2 ساعات و 52 دقيقة</td>
+                                        <td>206.80</td>
+                                    </tr>
+                                    <tr>
+                                        <td>مكنسة كهربائية</td>
+                                        <td>TVC-1200B</td>
+                                        <td>45.60</td>
+                                        <td>1 ساعة و 10 دقائق</td>
+                                        <td>54.72</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center mb-4">
+                <a href="Add-device2.html" class="btn btn-primary px-5">
+                    <i class="fas fa-plus-circle mr-2"></i> إضافة جهاز جديد
+                </a>
+                <a href="index.html" class="btn btn-secondary px-5 ml-3">
+                    <i class="fas fa-home mr-2"></i> العودة للصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/electricity.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!window.auth.isLoggedIn()) {
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            createMonthlyConsumptionChart();
+            createDeviceConsumptionChart();
+            
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.auth.logout();
+            });
+        });
+        
+        function createMonthlyConsumptionChart() {
+            const ctx = document.getElementById('monthlyConsumptionChart').getContext('2d');
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
+            const consumptionData = [520, 550, 580, 560, 600, 650];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'استهلاك الكهرباء (كيلوواط/ساعة)',
+                        data: consumptionData,
+                        backgroundColor: 'rgba(78, 95, 83, 0.2)',
+                        borderColor: '#4E5F53',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#4E5F53',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'كيلوواط/ساعة'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createDeviceConsumptionChart() {
+            const ctx = document.getElementById('deviceConsumptionChart').getContext('2d');
+            const devices = ['سخان مياه', 'قلاية هوائية', 'مكنسة كهربائية'];
+            const consumptionData = [338.29, 172.33, 45.60];
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: devices,
+                    datasets: [{
+                        data: consumptionData,
+                        backgroundColor: [
+                            'rgba(78, 95, 83, 0.8)',
+                            'rgba(78, 95, 83, 0.6)',
+                            'rgba(78, 95, 83, 0.4)'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertElement = document.createElement('div');
+            alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+            alertElement.role = 'alert';
+            
+            alertElement.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            `;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                $(alertElement).alert('close');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
