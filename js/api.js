@@ -1,5 +1,5 @@
 // وحدة للتعامل مع طلبات API
-const API_BASE_URL = 'http://wattsguardak4529.runasp.net/api';
+const API_BASE_URL = 'https://wattsguardak4529.runasp.net/api';
 
 async function apiRequest(endpoint, method = 'GET', data = null) {
   const token = localStorage.getItem('token');
