@@ -1,0 +1,209 @@
+device_id,status,city,consumption,is_theft,lat,lng
+1,active,Cairo,15.4,0,30.0444,31.2358
+2,inactive,Giza,8.9,1,29.987,31.2118
+3,active,Alexandria,12.1,0,31.1975,29.8925
+4,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+5,active,Sinnuris,9.7,0,29.4072,30.8667
+6,inactive,Al Mansoura,7.8,1,31.05,31.3833
+7,active,Helwan,10.5,0,29.8453,31.3333
+8,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+9,inactive,Shebin El Qanater,11.2,1,30.3133,31.3214
+10,active,Fayoum,13.6,0,29.3084,30.8441
+11,active,Akhmim,13.6,0,26.5667,31.75
+12,active,El Maragha,13.6,1,26.7,31.6
+13,active,Tanta,13.6,1,30.7833,31
+14,active,Awsim,13.6,0,30.1167,31.1333
+15,active,Assiut,13.6,0,27.1833,31.1667
+16,active,Zagazig,13.6,1,30.5667,31.5
+17,active,El Agamy,13.6,1,31.0959,29.7604
+18,active,Shebin El Kom,13.6,0,30.5586,31.01
+19,inactive,Ras El Bar,13.6,0,31.5125,31.8256
+20,active,10th of Ramadan City,13.6,1,30.3065,31.7415
+21,active,Damanhour,13.6,1,31.0361,30.4694
+22,active,Minya,13.6,0,28.1194,30.7444
+23,inactive,Mallawi,13.6,0,27.7333,30.8333
+24,active,Damietta,13.6,1,31.4167,31.8214
+25,active,Qena,13.6,1,26.1667,32.7167
+26,inactive,Beni Suef,13.6,0,29.0667,31.0833
+27,active,Benha,13.6,0,30.4667,31.1833
+28,active,Qalyub,13.6,1,30.1997,31.2053
+29,active,Kafr El Sheikh,13.6,1,31.1117,30.9458
+30,active,Desouk,13.6,0,31.1422,30.645
+31,active,Meet Ghamr,13.6,0,30.7167,31.25
+32,active,Menouf,13.6,1,30.4658,30.9308
+33,active,Faqous,13.6,1,30.7282,31.797
+34,active,Girga,13.6,0,26.3333,31.9
+35,active,El Badrasheen,13.6,0,29.852,31.276
+36,inactive,Ibshawai,13.6,1,29.4447,30.7107
+37,active,El Khanka,13.6,1,30.1601,31.3133
+38,active,Ezbet El Borg,13.6,0,31.5031,31.8411
+39,active,Kerdasa,13.6,0,30.032,31.1104
+40,inactive,Abnoub,13.6,1,27.2667,31.15
+41,active,El Menshah,13.6,1,26.4833,31.8
+42,active,El Qourain,13.6,0,30.6161,31.7353
+43,inactive,Abu Zaabal,13.6,0,30.2415,31.411
+44,active,El Balyana,13.6,1,26.2333,32
+45,active,El Ayat,13.6,1,29.6167,31.25
+46,active,El Badari,13.6,0,26.9925,31.4156
+47,active,Kafr El Kurdi,13.6,0,31.1429,31.7826
+48,active,Abu Qir,13.6,1,31.3167,30.0667
+49,active,Qaha,13.6,1,30.2833,31.2
+50,active,Karnak,13.6,0,25.7186,32.6586
+51,active,Kafr Shukr,13.6,0,30.547,31.2673
+52,active,Meet Nama,13.6,1,30.1453,31.2343
+53,inactive,Bani Murr,13.6,1,27.2272,31.1944
+54,active,El Madamoud,13.6,0,25.7167,32.65
+55,active,Berqash,13.6,0,30.1692,31.0417
+56,active,Kafr Tahlah,13.6,1,30.3981,31.1333
+57,active,Cairo,15.4,0,30.0444,31.2358
+58,inactive,Giza,8.9,1,29.987,31.2118
+59,active,Alexandria,12.1,0,31.1975,29.8925
+60,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+61,active,Sinnuris,9.7,0,29.4072,30.8667
+62,inactive,Al Mansoura,7.8,1,31.05,31.3833
+63,active,Helwan,10.5,0,29.8453,31.3333
+64,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+65,inactive,Shebin El Qanater,11.2,1,30.3133,31.3214
+66,active,Fayoum,13.6,0,29.3084,30.8441
+67,active,Akhmim,13.6,0,26.5667,31.75
+68,active,El Maragha,13.6,1,26.7,31.6
+69,active,Tanta,13.6,1,30.7833,31
+70,active,Awsim,13.6,0,30.1167,31.1333
+71,active,Assiut,13.6,0,27.1833,31.1667
+72,active,Zagazig,13.6,1,30.5667,31.5
+73,active,El Agamy,13.6,1,31.0959,29.7604
+74,active,Shebin El Kom,13.6,0,30.5586,31.01
+75,inactive,Ras El Bar,13.6,0,31.5125,31.8256
+76,active,10th of Ramadan City,13.6,1,30.3065,31.7415
+77,active,Damanhour,13.6,1,31.0361,30.4694
+78,active,Minya,13.6,0,28.1194,30.7444
+79,inactive,Mallawi,13.6,0,27.7333,30.8333
+80,active,Damietta,13.6,1,31.4167,31.8214
+81,active,Qena,13.6,1,26.1667,32.7167
+82,inactive,Beni Suef,13.6,0,29.0667,31.0833
+83,active,Benha,13.6,0,30.4667,31.1833
+84,active,Qalyub,13.6,1,30.1997,31.2053
+85,active,Kafr El Sheikh,13.6,1,31.1117,30.9458
+86,active,Desouk,13.6,0,31.1422,30.645
+87,active,Meet Ghamr,13.6,0,30.7167,31.25
+88,active,Menouf,13.6,1,30.4658,30.9308
+89,active,Faqous,13.6,1,30.7282,31.797
+90,active,Girga,13.6,0,26.3333,31.9
+91,active,El Badrasheen,13.6,0,29.852,31.276
+92,inactive,Ibshawai,13.6,1,29.4447,30.7107
+93,active,El Khanka,13.6,1,30.1601,31.3133
+94,active,Ezbet El Borg,13.6,0,31.5031,31.8411
+95,active,Kerdasa,13.6,0,30.032,31.1104
+96,inactive,Abnoub,13.6,1,27.2667,31.15
+97,active,El Menshah,13.6,1,26.4833,31.8
+98,active,El Qourain,13.6,0,30.6161,31.7353
+99,inactive,Abu Zaabal,13.6,0,30.2415,31.411
+100,active,El Balyana,13.6,1,26.2333,32
+101,active,El Ayat,13.6,1,29.6167,31.25
+102,active,El Badari,13.6,0,26.9925,31.4156
+103,active,Kafr El Kurdi,13.6,0,31.1429,31.7826
+104,active,Abu Qir,13.6,1,31.3167,30.0667
+105,active,Qaha,13.6,1,30.2833,31.2
+106,active,Karnak,13.6,0,25.7186,32.6586
+107,active,Kafr Shukr,13.6,0,30.547,31.2673
+108,active,Meet Nama,13.6,1,30.1453,31.2343
+109,inactive,Bani Murr,13.6,1,27.2272,31.1944
+110,active,El Madamoud,13.6,0,25.7167,32.65
+111,active,Berqash,13.6,0,30.1692,31.0417
+112,active,Kafr Tahlah,13.6,1,30.3981,31.1333
+113,active,Cairo,15.4,0,30.0444,31.2358
+114,inactive,Giza,8.9,1,29.987,31.2118
+115,active,Alexandria,12.1,0,31.1975,29.8925
+116,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+117,active,Sinnuris,9.7,0,29.4072,30.8667
+118,inactive,Al Mansoura,7.8,1,31.05,31.3833
+119,active,Helwan,10.5,0,29.8453,31.3333
+120,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+121,inactive,Shebin El Qanater,11.2,1,30.3133,31.3214
+122,active,Fayoum,13.6,0,29.3084,30.8441
+123,active,Akhmim,13.6,0,26.5667,31.75
+124,active,El Maragha,13.6,1,26.7,31.6
+125,active,Tanta,13.6,1,30.7833,31
+126,active,Awsim,13.6,0,30.1167,31.1333
+127,active,Assiut,13.6,0,27.1833,31.1667
+128,active,Zagazig,13.6,1,30.5667,31.5
+129,active,El Agamy,13.6,1,31.0959,29.7604
+130,active,Shebin El Kom,13.6,0,30.5586,31.01
+131,inactive,Ras El Bar,13.6,0,31.5125,31.8256
+132,active,10th of Ramadan City,13.6,1,30.3065,31.7415
+133,active,Damanhour,13.6,1,31.0361,30.4694
+134,active,Minya,13.6,0,28.1194,30.7444
+135,inactive,Mallawi,13.6,0,27.7333,30.8333
+136,active,Damietta,13.6,1,31.4167,31.8214
+137,active,Qena,13.6,1,26.1667,32.7167
+138,inactive,Beni Suef,13.6,0,29.0667,31.0833
+139,active,Benha,13.6,0,30.4667,31.1833
+140,active,Qalyub,13.6,1,30.1997,31.2053
+141,active,Kafr El Sheikh,13.6,1,31.1117,30.9458
+142,active,Desouk,13.6,0,31.1422,30.645
+143,active,Meet Ghamr,13.6,0,30.7167,31.25
+144,active,Menouf,13.6,1,30.4658,30.9308
+145,active,Faqous,13.6,1,30.7282,31.797
+146,active,Girga,13.6,0,26.3333,31.9
+147,active,El Badrasheen,13.6,0,29.852,31.276
+148,inactive,Ibshawai,13.6,1,29.4447,30.7107
+149,active,El Khanka,13.6,1,30.1601,31.3133
+150,active,Ezbet El Borg,13.6,0,31.5031,31.8411
+151,active,Kerdasa,13.6,0,30.032,31.1104
+152,inactive,Abnoub,13.6,1,27.2667,31.15
+153,active,El Menshah,13.6,1,26.4833,31.8
+154,active,El Qourain,13.6,0,30.6161,31.7353
+155,inactive,Abu Zaabal,13.6,0,30.2415,31.411
+156,active,El Balyana,13.6,1,26.2333,32
+157,active,El Ayat,13.6,1,29.6167,31.25
+158,active,El Badari,13.6,0,26.9925,31.4156
+159,active,Kafr El Kurdi,13.6,0,31.1429,31.7826
+160,active,Abu Qir,13.6,1,31.3167,30.0667
+161,active,Qaha,13.6,1,30.2833,31.2
+162,active,Karnak,13.6,0,25.7186,32.6586
+163,active,Kafr Shukr,13.6,0,30.547,31.2673
+164,active,Meet Nama,13.6,1,30.1453,31.2343
+165,inactive,Bani Murr,13.6,1,27.2272,31.1944
+166,active,El Madamoud,13.6,0,25.7167,32.65
+167,active,Berqash,13.6,0,30.1692,31.0417
+168,active,Kafr Tahlah,13.6,1,30.3981,31.1333
+169,active,Cairo,15.4,0,30.0444,31.2358
+170,inactive,Giza,8.9,1,29.987,31.2118
+171,active,Alexandria,12.1,0,31.1975,29.8925
+172,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+173,active,Sinnuris,9.7,0,29.4072,30.8667
+174,inactive,Al Mansoura,7.8,1,31.05,31.3833
+175,active,Helwan,10.5,0,29.8453,31.3333
+176,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+177,active,Cairo,15.4,0,30.0444,31.2358
+178,inactive,Giza,8.9,1,29.987,31.2118
+179,active,Alexandria,12.1,0,31.1975,29.8925
+180,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+181,active,Sinnuris,9.7,0,29.4072,30.8667
+182,inactive,Al Mansoura,7.8,1,31.05,31.3833
+183,active,Helwan,10.5,0,29.8453,31.3333
+184,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+185,active,Cairo,15.4,0,30.0444,31.2358
+186,inactive,Giza,8.9,1,29.987,31.2118
+187,active,Alexandria,12.1,0,31.1975,29.8925
+188,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+189,active,Sinnuris,9.7,0,29.4072,30.8667
+190,inactive,Al Mansoura,7.8,1,31.05,31.3833
+191,active,Helwan,10.5,0,29.8453,31.3333
+192,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+193,active,Cairo,15.4,0,30.0444,31.2358
+194,inactive,Giza,8.9,1,29.987,31.2118
+195,active,Alexandria,12.1,0,31.1975,29.8925
+196,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+197,active,Sinnuris,9.7,0,29.4072,30.8667
+198,inactive,Al Mansoura,7.8,1,31.05,31.3833
+199,active,Helwan,10.5,0,29.8453,31.3333
+200,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636
+201,active,Cairo,15.4,0,30.0444,31.2358
+202,inactive,Giza,8.9,1,29.987,31.2118
+203,active,Alexandria,12.1,0,31.1975,29.8925
+204,active,Shubra El-Kheima,17.3,1,30.1286,31.2422
+205,active,Sinnuris,9.7,0,29.4072,30.8667
+206,inactive,Al Mansoura,7.8,1,31.05,31.3833
+207,active,Helwan,10.5,0,29.8453,31.3333
+208,active,El Mahalla El Kubra,6.3,1,30.9686,31.1636

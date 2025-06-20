@@ -20,12 +20,13 @@ namespace Grad_Project.Controllers
         private readonly IConfiguration configuration;
         private readonly DataContext db;
 
-        public AccountController(UserManager<AppUser>userManager,IConfiguration configuration,DataContext db)
+        public AccountController(UserManager<AppUser> userManager, IConfiguration configuration, DataContext db)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.db = db;
         }
+
         [HttpPost("RegisterAsUser")]
         public async Task<IActionResult> RegisterAsUser(RegisterDto register)
         {
@@ -36,20 +37,34 @@ namespace Grad_Project.Controllers
                     idNumber = register.idNumber,
                     UserName = register.name,
                     Email = register.email,
-                    PhoneNumber = register.phone
+                    PhoneNumber = register.phone,
+                    lastLogin = DateTime.UtcNow
                 };
+
                 IdentityResult result = await userManager.CreateAsync(user, register.password);
-               
+
                 if (result.Succeeded)
                 {
                     var addCounter = new Counter()
                     {
-                        id = register.counterId,
+                        id = Guid.NewGuid().ToString(),
+                        CounterId = register.counterId,
                         userId = user.Id
                     };
                     await db.counters.AddAsync(addCounter);
+
+                    var address = new Address
+                    {
+                        UserId = user.Id,
+                        Street = register.address.Street, 
+                        Region = register.address.Region, 
+                        City = register.address.City, 
+                        Governorate = register.address.Governorate 
+                    };
+                    await db.addresses.AddAsync(address);
+
                     await db.SaveChangesAsync();
-                    return Ok("Register");
+                    return Ok("User registered successfully");
                 }
                 else
                 {
@@ -58,22 +73,23 @@ namespace Grad_Project.Controllers
                         ModelState.AddModelError("", item.Description);
                     }
                 }
-
             }
             return BadRequest(ModelState);
         }
+
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(LoginDto login)
         {
             if (ModelState.IsValid)
             {
-                AppUser? user = await db.Users.Where(x=>x.idNumber==login.idNumber).FirstOrDefaultAsync();
+                AppUser? user = await db.Users
+                    .Where(x => x.idNumber == login.idNumber)
+                    .FirstOrDefaultAsync();
                 if (user != null)
                 {
                     if (await userManager.CheckPasswordAsync(user, login.password))
                     {
                         var claims = new List<Claim>();
-                        //claims.Add(new Claim("name", "value"));
                         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
                         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
@@ -82,46 +98,62 @@ namespace Grad_Project.Controllers
                         {
                             claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
                         }
-                        //signingCredentials
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
                         var sc = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                         var token = new JwtSecurityToken(
                             claims: claims,
-                            issuer: configuration["JWT:Issuer"],
-                            audience: configuration["JWT:Audience"],
-                            expires: DateTime.Now.AddHours(1),
+                            issuer: configuration["Jwt:Issuer"],
+                            audience: configuration["Jwt:Audience"],
+                            expires: DateTime.UtcNow.AddHours(1),
                             signingCredentials: sc
-                            );
+                        );
                         var _token = new
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo,
+                            expiration = token.ValidTo
                         };
-                        var myCounter =await db.counters.Where(x => x.userId == user.Id).FirstOrDefaultAsync();
+
+                        var myCounter = await db.counters
+                            .Where(x => x.userId == user.Id)
+                            .FirstOrDefaultAsync();
+
+                        var userAddress = await db.addresses
+                            .Where(a => a.UserId == user.Id)
+                            .FirstOrDefaultAsync();
+
+                        user.lastLogin = DateTime.UtcNow;
+
                         var data = new LoginResponseDto()
                         {
                             id = user.Id,
-                            idNumber=user.idNumber,
+                            idNumber = user.idNumber,
                             name = user.UserName,
                             email = user.Email,
-                            counterId=myCounter.id,
-                            lastLogin=user.lastLogin,
+                            counterId = myCounter?.CounterId,
+                            lastLogin = user.lastLogin,
                             token = _token.token,
-                            expiration = _token.expiration
-
+                            expiration = _token.expiration,
+                            address = userAddress != null ? new AddressDto
+                            {
+                                Street = userAddress.Street,
+                                Region = userAddress.Region,
+                                City = userAddress.City,
+                                Governorate = userAddress.Governorate
+                            } : null
                         };
-                        user.lastLogin = DateTime.Now;
+
                         await db.SaveChangesAsync();
                         return Ok(data);
                     }
                     else
                     {
-                        return Unauthorized();
+                        return Unauthorized("Invalid password");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "User Name is invalid");
+                    ModelState.AddModelError("", "User with this ID number does not exist");
                 }
             }
             return BadRequest(ModelState);

@@ -10,9 +10,9 @@ namespace Grad_Project.Services
         {
             var account = new Account
             {
-                Cloud = "",
-                ApiKey = "",
-                ApiSecret = ""
+                Cloud = "dd1eqjcln",
+                ApiKey = "884986836719668",
+                ApiSecret = "2WEupBr7sClKEj0r41738NQZoLc"
             };
             cloudinary = new Cloudinary(account);
 

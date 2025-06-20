@@ -1,55 +1,103 @@
-﻿using AutoMapper;
-using Grad_Project.Database;
-using Grad_Project.DTO;
+﻿using Grad_Project.Database;
 using Grad_Project.Entity;
 using Grad_Project.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Grad_Project.Repository
 {
-    public class CounterRep:ICounterRep
+    public class CounterRep : ICounterRep
     {
-        private readonly DataContext db;
-        private readonly IMapper mapper;
+        private readonly DataContext _context;
+        private readonly ILogger<CounterRep> _logger;
 
-        public CounterRep(DataContext db,IMapper mapper)
+        public CounterRep(DataContext context, ILogger<CounterRep> logger)
         {
-            this.db = db;
-            this.mapper = mapper;
-        }
-        public async Task<IEnumerable<Counter>> GetAllCountersAsync()
-        {
-            var data = await db.counters.ToListAsync();
-            return data;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<CounterData>> GetCounterDataByCounterIdAync(string CounterId)
+        public async Task<Counter> GetCounterByCounterIdAsync(string counterId)
         {
-            var data = await db.counterDatas.Where(x => x.counterId == CounterId).ToListAsync();
-            return data;
+            if (string.IsNullOrEmpty(counterId))
+            {
+                _logger.LogWarning("CounterId is null or empty.");
+                return null;
+            }
+
+            var counter = await _context.counters
+                .Include(c => c.User)
+                .ThenInclude(u => u.Address)
+                .FirstOrDefaultAsync(c => c.CounterId.ToLower() == counterId.ToLower());
+
+            if (counter == null)
+            {
+                _logger.LogWarning($"No counter found with CounterId: {counterId}");
+            }
+
+            return counter;
         }
+
         public async Task CreateCounterDataAsync(CounterData counterData)
         {
-            await db.counterDatas.AddAsync(counterData);
-        }
-        public async Task UpdateCounterDataByIdAsync(int counterDataId, CreateCounterDataDto counterData)
-        {
-            var data = await db.counterDatas.FindAsync(counterDataId);
-            mapper.Map(counterDataId, data);
-            await db.SaveChangesAsync();
-        }
-        public async Task DeleteCounterDataByIdAsync(int id)
-        {
-            var data = await db.counterDatas.FindAsync(id);
-            db.counterDatas.Remove(data);
-            db.SaveChanges();
+            if (counterData == null)
+            {
+                _logger.LogError("CounterData is null.");
+                throw new ArgumentNullException(nameof(counterData));
+            }
+
+            var counterExists = await _context.counters.AnyAsync(c => c.id == counterData.CounterId);
+            if (!counterExists)
+            {
+                _logger.LogError($"No counter found with CounterId: {counterData.CounterId}");
+                throw new InvalidOperationException($"لا يوجد عداد بالمعرف {counterData.CounterId} في جدول counters");
+            }
+
+            await _context.counterData.AddAsync(counterData);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"CounterData added successfully for CounterId: {counterData.CounterId}");
         }
 
-        public async Task EmptyCounterDataByCounterIdAsync(string counterId)
+        public async Task<bool> IsUserThiefByCounterIdAsync(string counterId)
         {
-            var data = await db.counterDatas.Where(x => x.counterId == counterId).ToListAsync();
-            db.counterDatas.RemoveRange(data);
-            db.SaveChanges();
+            var counter = await _context.counters
+                .FirstOrDefaultAsync(c => c.CounterId.ToLower() == counterId.ToLower());
+            if (counter == null)
+            {
+                _logger.LogWarning($"No counter found with CounterId: {counterId}");
+                return false;
+            }
+
+            var latestCounterData = await _context.counterData
+                .Where(d => d.CounterId == counter.id)
+                .OrderByDescending(d => d.TimeStamp)
+                .FirstOrDefaultAsync();
+
+            if (latestCounterData == null)
+            {
+                _logger.LogWarning($"No CounterData found for CounterId: {counterId}");
+                return false;
+            }
+
+            return latestCounterData.Flag == 1;
+        }
+
+        public async Task<IEnumerable<CounterData>> GetCounterDataByCounterIdAsync(string counterId)
+        {
+            var counter = await _context.counters
+                .FirstOrDefaultAsync(c => c.CounterId.ToLower() == counterId.ToLower());
+            if (counter == null)
+            {
+                _logger.LogWarning($"No counter found with CounterId: {counterId}");
+                return new List<CounterData>();
+            }
+
+            return await _context.counterData
+                .Include(d => d.Counter)
+                .ThenInclude(c => c.User)
+                .ThenInclude(u => u.Address)
+                .Where(d => d.CounterId == counter.id)
+                .ToListAsync();
         }
     }
 }

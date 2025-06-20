@@ -10,5 +10,6 @@
         public DateTime lastLogin { get; set; }
         public string token { get; set; }
         public DateTime expiration { get; set; }
+        public AddressDto address { get; set; }
     }
 }

@@ -22,6 +22,42 @@ namespace Grad_Project.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Grad_Project.Entity.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Governorate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("addresses");
+                });
+
             modelBuilder.Entity("Grad_Project.Entity.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -94,33 +130,14 @@ namespace Grad_Project.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Grad_Project.Entity.Area", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("totalUsage")
-                        .HasColumnType("float");
-
-                    b.HasKey("id");
-
-                    b.ToTable("areas");
-                });
-
             modelBuilder.Entity("Grad_Project.Entity.Counter", b =>
                 {
                     b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("subAreaId")
-                        .HasColumnType("int");
+                    b.Property<string>("CounterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("userId")
                         .IsRequired()
@@ -128,7 +145,8 @@ namespace Grad_Project.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("subAreaId");
+                    b.HasIndex("CounterId")
+                        .IsUnique();
 
                     b.HasIndex("userId");
 
@@ -137,128 +155,55 @@ namespace Grad_Project.Migrations
 
             modelBuilder.Entity("Grad_Project.Entity.CounterData", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("counterId")
+                    b.Property<string>("CounterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("timeStamp")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Flag")
+                        .HasColumnType("int");
 
-                    b.Property<double>("usage")
+                    b.Property<double>("Reading")
                         .HasColumnType("float");
 
-                    b.HasKey("id");
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("counterId");
+                    b.HasKey("Id");
 
-                    b.ToTable("counterDatas");
+                    b.HasIndex("CounterId");
+
+                    b.ToTable("counterData");
                 });
 
-            modelBuilder.Entity("Grad_Project.Entity.Device", b =>
+            modelBuilder.Entity("Grad_Project.Entity.OfficialReading", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("picPublicId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("picUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("powerConsumption")
-                        .HasColumnType("float");
-
-                    b.HasKey("id");
-
-                    b.ToTable("devices");
-                });
-
-            modelBuilder.Entity("Grad_Project.Entity.Schedule", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("deviceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("endTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("startTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("userId")
+                    b.Property<string>("CounterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("id");
-
-                    b.HasIndex("deviceId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("schedules");
-                });
-
-            modelBuilder.Entity("Grad_Project.Entity.SubArea", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("areaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("usage")
+                    b.Property<double>("Reading")
                         .HasColumnType("float");
 
-                    b.HasKey("id");
+                    b.Property<DateTime>("ReadingDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("areaId");
+                    b.HasKey("Id");
 
-                    b.ToTable("subAreas");
-                });
+                    b.HasIndex("CounterId");
 
-            modelBuilder.Entity("Grad_Project.Entity.UserDevice", b =>
-                {
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("deviceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("userId", "deviceId");
-
-                    b.HasIndex("deviceId");
-
-                    b.ToTable("userDevices");
+                    b.ToTable("officialReadings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -394,81 +339,48 @@ namespace Grad_Project.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Grad_Project.Entity.Address", b =>
+                {
+                    b.HasOne("Grad_Project.Entity.AppUser", "User")
+                        .WithOne("Address")
+                        .HasForeignKey("Grad_Project.Entity.Address", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Grad_Project.Entity.Counter", b =>
                 {
-                    b.HasOne("Grad_Project.Entity.SubArea", "subArea")
-                        .WithMany()
-                        .HasForeignKey("subAreaId");
-
-                    b.HasOne("Grad_Project.Entity.AppUser", "user")
-                        .WithMany()
+                    b.HasOne("Grad_Project.Entity.AppUser", "User")
+                        .WithMany("Counters")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("subArea");
-
-                    b.Navigation("user");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Grad_Project.Entity.CounterData", b =>
                 {
-                    b.HasOne("Grad_Project.Entity.Counter", "counter")
-                        .WithMany()
-                        .HasForeignKey("counterId")
+                    b.HasOne("Grad_Project.Entity.Counter", "Counter")
+                        .WithMany("CounterData")
+                        .HasForeignKey("CounterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("counter");
+                    b.Navigation("Counter");
                 });
 
-            modelBuilder.Entity("Grad_Project.Entity.Schedule", b =>
+            modelBuilder.Entity("Grad_Project.Entity.OfficialReading", b =>
                 {
-                    b.HasOne("Grad_Project.Entity.Device", "device")
+                    b.HasOne("Grad_Project.Entity.Counter", "Counter")
                         .WithMany()
-                        .HasForeignKey("deviceId")
+                        .HasForeignKey("CounterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Grad_Project.Entity.AppUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("device");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("Grad_Project.Entity.SubArea", b =>
-                {
-                    b.HasOne("Grad_Project.Entity.Area", "area")
-                        .WithMany()
-                        .HasForeignKey("areaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("area");
-                });
-
-            modelBuilder.Entity("Grad_Project.Entity.UserDevice", b =>
-                {
-                    b.HasOne("Grad_Project.Entity.Device", "device")
-                        .WithMany()
-                        .HasForeignKey("deviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Grad_Project.Entity.AppUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("device");
-
-                    b.Navigation("user");
+                    b.Navigation("Counter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -520,6 +432,19 @@ namespace Grad_Project.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Grad_Project.Entity.AppUser", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Counters");
+                });
+
+            modelBuilder.Entity("Grad_Project.Entity.Counter", b =>
+                {
+                    b.Navigation("CounterData");
                 });
 #pragma warning restore 612, 618
         }

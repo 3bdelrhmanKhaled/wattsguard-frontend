@@ -12,5 +12,6 @@ namespace Grad_Project.DTO
         [Phone]
         public string phone { get; set; }
         public string counterId { get; set; }
+        public AddressDto address { get; set; } // إضافة العنوان
     }
 }

@@ -2,10 +2,11 @@
 {
     public class CounterData
     {
-        public int id { get; set; }
-        public DateTime timeStamp { get; set; }
-        public double usage { get; set; }
-        public string counterId { get; set; }
-        public Counter counter { get; set; }
+        public int Id { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public double Reading { get; set; }
+        public int Flag { get; set; }
+        public string CounterId { get; set; }
+        public Counter Counter { get; set; }
     }
 }

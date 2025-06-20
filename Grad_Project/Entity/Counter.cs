@@ -4,8 +4,8 @@
     {
         public string id { get; set; }
         public string userId { get; set; }
-        public AppUser user { get; set; }
-        public int? subAreaId { get; set; }
-        public SubArea subArea { get; set; }
+        public AppUser User { get; set; }
+        public List<CounterData> CounterData { get; set; } = new List<CounterData>();
+        public string CounterId { get; set; }
     }
 }
